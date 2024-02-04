@@ -13,3 +13,16 @@ df=pd.read_csv("Dataset/advertising.csv") # dataset to use
 
 X=df[["TV"]] #dependent variable
 y=df[["sales"]] # independent variable
+
+reg_model=LinearRegression().fit(X,y) # creating model
+
+bias=reg_model.intercept_[0] # finding bias
+weights=reg_model.coef_[0][0] # finding wights
+
+# question: How much sales are expected if 150 units of TV are spent?
+answer=bias+weights*150
+
+# question2: How much sales are expected if 500 units of TV are spent?
+answer2=bias+weights*500
+
+
