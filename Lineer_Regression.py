@@ -25,4 +25,13 @@ answer=bias+weights*150
 # question2: How much sales are expected if 500 units of TV are spent?
 answer2=bias+weights*500
 
+graphic = sns.regplot(x=X, y=y, scatter_kws={'color': 'b', 's': 9},ci=False, color="r")
+
+graphic.set_title(f"Model equation : Sales = {round(bias, 2)} + TV*{round(weights, 2)}")
+graphic.set_ylabel("number of sales")
+graphic.set_xlabel("TV Expenses")
+plt.xlim(-10, 310)
+plt.ylim(bottom=0)
+plt.show()
+
 
