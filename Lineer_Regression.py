@@ -34,4 +34,14 @@ plt.xlim(-10, 310)
 plt.ylim(bottom=0)
 plt.show()
 
+# Evaluation of the model
+y_pred = reg_model.predict(X)
+
+mean_squared_error(y,y_pred) # MSE
+
+mean_absolute_error(y,y_pred) # MAE
+
+np.sqrt(mean_squared_error(y,y_pred)) # RMSE
+
+reg_model.score(X,y) # R-squared
 
