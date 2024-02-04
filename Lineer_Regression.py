@@ -71,4 +71,6 @@ np.sqrt(mean_squared_error(y2_test,y_pred_test))
 #test R-Squared
 reg_secound.score(X2_test,y2_test)
 
+#Cross validation
+np.mean(np.sqrt(-cross_val_score(reg_secound,X2,y2, cv=10,scoring="neg_mean_squared_error")))
 
