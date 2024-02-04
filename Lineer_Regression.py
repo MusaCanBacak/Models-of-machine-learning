@@ -55,4 +55,20 @@ d=[[35],[15],[40]]
 d=pd.DataFrame(d).T
 reg_secound.predict(d)
 
+# Evaluation of the model
+y_pred_secound=reg_secound.predict(X2_train)
+
+#train RMSE
+np.sqrt(mean_squared_error(y2_train,y_pred))
+
+#train R-Squared
+reg_secound.score(X2_train,y2_train)
+
+#test RMSE
+y_pred_test=reg_secound.predict(X2_test)
+np.sqrt(mean_squared_error(y2_test,y_pred_test))
+
+#test R-Squared
+reg_secound.score(X2_test,y2_test)
+
 
