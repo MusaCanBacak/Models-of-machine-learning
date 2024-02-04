@@ -38,10 +38,21 @@ plt.show()
 y_pred = reg_model.predict(X)
 
 mean_squared_error(y,y_pred) # MSE
-
 mean_absolute_error(y,y_pred) # MAE
-
 np.sqrt(mean_squared_error(y,y_pred)) # RMSE
-
 reg_model.score(X,y) # R-squared
+
+# Multiple Linear Regression
+
+X2=df.drop('sales',axis=1)
+y2=df["sales"]
+X2_train, y2_train, X2_test, y2_test=train_test_split(X2,y2,test_size=0.20)
+
+reg_secound=LinearRegression().fit(X2_train,y2_train)
+
+# Example
+d=[[35],[15],[40]]
+d=pd.DataFrame(d).T
+reg_secound.predict(d)
+
 
