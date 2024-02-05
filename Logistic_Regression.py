@@ -17,3 +17,11 @@ plt.show()
 
 100 * df["Outcome"].value_counts() / len(df)
 
+def plot_numerical_col(dataframe, numerical_col):
+    dataframe[numerical_col].hist(bins=20)
+    plt.xlabel(numerical_col)
+    plt.show(block=True)
+
+for col in df.columns:
+    plot_numerical_col(df,col)
+
