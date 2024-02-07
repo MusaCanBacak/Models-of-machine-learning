@@ -36,6 +36,15 @@ def replace_with_thresholds(dataframe, variable):
     dataframe.loc[(dataframe[variable] < low_limit), variable] = low_limit
     dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
 
+def plot_confusion_matrix(y, y_pred):
+    acc = round(accuracy_score(y, y_pred), 2)
+    cm = confusion_matrix(y, y_pred)
+    sns.heatmap(cm, annot=True, fmt=".0f")
+    plt.xlabel('y_pred')
+    plt.ylabel('y')
+    plt.title('Accuracy Score: {0}'.format(acc), size=10)
+    plt.show()
+
 df=pd.read_csv("Dataset/diabetes.csv") #import dataset
 
 df["Outcome"].value_counts()    #independent variable analysis
@@ -58,6 +67,21 @@ for col in dependent_cols:
 replace_with_thresholds(df, "Insulin")
 
 for col in dependent_cols:
-    df[col] = RobustScaler().fit_transform(df[[col]]) #train the model
+    df[col] = RobustScaler().fit_transform(df[[col]])
 
 df.head()
+
+y=df["Outcome"]
+X=df.drop(["Outcome"],axis=1)
+
+logistic_model=LogisticRegression().fit(X,y) #train the model
+
+y_pred=logistic_model.predict(X)
+
+plot_confusion_matrix(y, y_pred)
+
+print(classification_report(y, y_pred))
+
+y_prob = logistic_model.predict_proba(X)[:, 1]
+roc_auc_score(y, y_prob)
+
