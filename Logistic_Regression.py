@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import RobustScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score,roc_auc_score,confusion_matrix,classification_report,plot_roc_curve
-from sklearn.model_selection import train_test_split,cross_val_score
+from sklearn.model_selection import train_test_split , cross_val_score
 
 def plot_numerical_col(dataframe, numerical_col):  #graphing function
     dataframe[numerical_col].hist(bins=20)
@@ -85,3 +85,34 @@ print(classification_report(y, y_pred))
 y_prob = logistic_model.predict_proba(X)[:, 1]
 roc_auc_score(y, y_prob)
 
+
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.20)
+
+logistic_model=LogisticRegression.fit(X_train,y_train)
+
+y_pred=logistic_model.predict(X_test)
+y_prob=logistic_model.predict_proba(X_test)[:,1]
+
+print(classification_report(y_test, y_pred))
+
+plot_roc_curve(logistic_model,X_test,y_test)
+plt.title('ROC Curve')
+plt.plot([0, 1], [0, 1], 'r--')
+plt.show()
+
+roc_auc_score(y_test, y_prob)
+
+cv_results = cross_val_score(logistic_model,
+                            X, y,
+                            cv=5,
+                            scoring=["accuracy", "precision", "recall", "f1", "roc_auc"])
+
+cv_results['test_accuracy'].mean()
+
+cv_results['test_precision'].mean()
+
+cv_results['test_recall'].mean()
+
+cv_results['test_f1'].mean()
+
+cv_results['test_roc_auc'].mean()
