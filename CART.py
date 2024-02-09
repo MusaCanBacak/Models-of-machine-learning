@@ -30,3 +30,20 @@ y_prob=cart_model.predict_proba(X)[:,1]
 print(classification_report(y,y_pred))
 
 roc_auc_score(y,y_prob)
+
+X_train, y_train, X_test, y_test = train_test_split(X, y, test_size=0.20)
+cart_model = DecisionTreeClassifier().fit(X_train ,y_train)
+
+y_pred = cart_model.predict(X_train)
+y_prob = cart_model.predict_proba(X_train)[:,1]
+print(classification_report(y_test,y_pred))
+roc_auc_score(y_test,y_prob)
+
+cart_model = DecisionTreeClassifier().fit(X,y)
+cv_result = cross_validate(cart_model, X, y, cv=10, scoring=["accuracy","f1","roc_auc"])
+
+cv_result["test_accuracy"].mean()
+cv_result["test_f1"].mean()
+cv_result["test_roc_auc"].mean
+
+
