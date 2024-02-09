@@ -30,3 +30,19 @@ cv["test_f1"].mean()
 cv["test_accuracy"].mean()
 cv["test_roc_auc"].mean()
 
+
+knn_model=KNeighborsClassifier()
+knn_model.get_params()
+
+knn_params={"n_neighbors":range(2,50)}
+
+knn_best_p=GridSearchCV(knn_model,knn_params,cv=10,n_jobs=-1,verbose=1).fit(X,y)
+knn_best_p.best_params_
+
+knn_final=knn_model.set_params(**knn_best_p.best_params_).fit(X,y)
+
+cv_result=cross_validate(X,y,cv=10,scoring=["f1","accuracy","roc_auc"])
+
+cv_result["test_f1"].mean()
+cv_result["test_accuracy"].mean()
+cv_result["test_roc_auc"].mean()
