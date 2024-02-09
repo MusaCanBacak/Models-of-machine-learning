@@ -17,6 +17,7 @@ import graphviz
 # pip install joblib
 # pip install garphviz
 
+
 df = pd.read_csv("Dataset/diabetes.csv")
 
 y = df["Outcome"]
@@ -46,4 +47,40 @@ cv_result["test_accuracy"].mean()
 cv_result["test_f1"].mean()
 cv_result["test_roc_auc"].mean
 
+#Hyperparameter optimization
+cart_model.get_params()
+
+cart_params = {'max_depth':range(1,15),
+               'min_sample_split':range(2,20)}
+cart_best_grid = GridSearchCV(cart_model,cart_params, cv=10, n_jobs=-1, verbose=1)
+
+cart_best_grid.best_params_
+cart_best_grid.best_score_
+
+#Final model
+
+cart_fnal=DecisionTreeClassifier(**cart_best_grid.best_params_).fit(X,y)
+cart_fnal.get_params()
+
+cart_fnal = cart_model.set_params(**cart_best_grid.best_params_).fit(X, y)
+
+cv_result=cross_validate(cart_fnal, X, y, cv=10 , scoring=["accuracy","f1","roc_auc"])
+
+cv_result['test_accuracy'].mean()
+cv_result["test_f1"].mean()
+cv_result["test_roc_auc"].mena()
+
+def plot_importance(model, features, num=len(X), save=False): #feature importance graph
+    feature_imp = pd.DataFrame({'Value': model.feature_importances_, 'Feature': features.columns})
+    plt.figure(figsize=(10, 10))
+    sns.set(font_scale=1)
+    sns.barplot(x="Value", y="Feature", data=feature_imp.sort_values(by="Value",
+                                                                     ascending=False)[0:num])
+    plt.title('Features')
+    plt.tight_layout()
+    plt.show()
+    if save:
+        plt.savefig('importances.png')
+
+plot_importance(cart_fnal, X, num=5)
 
