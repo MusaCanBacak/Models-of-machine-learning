@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from sklearn.ensemble import RandomForestClassifier , GradientBoostingClassifier , VotingClassifier
 from sklearn.model_selection import GridSearchCV, cross_validate, RandomizedSearchCV, validation_curve
 
-from xgboost import XCBClassifier
+from xgboost import XGBClassifier
 from catboost import  CatBoostClassifier
 from lightgbm import LGBMClassifier
 
@@ -22,7 +22,15 @@ warnings.simplefilter(action='ignore', category=Warning)
 df=pd.read_csv("Dataset/diabetes.csv")
 
 y=df["Outcome"]
-X=df.drop(["outcome"],axis=1)
+X=df.drop(["Outcome"],axis=1)
 
 ####### RANDOM FOREST #########
+
+rf_model = RandomForestClassifier()
+rf_model.get_params()
+
+cv_result = cross_validate(rf_model, X, y , cv=10, scoring=["accuracy","f1","roc_auc"])
+cv_result["test_accuracy"].mean()
+cv_result["test_f1"].mean()
+cv_result["test_roc_auc"].mean()
 
