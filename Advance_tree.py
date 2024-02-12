@@ -88,3 +88,32 @@ val_curve_params(rf_final, X, y, "max_depth", range(1, 11), scoring="roc_auc")
 
 ################## *GBM* ####################
 
+gbm_model = GradientBoostingClassifier()
+gbm_model.get_params()
+
+cv_result_gbm = cross_validate(gbm_model ,X ,y ,cv=10 ,scoring=["accuracy","f1","roc_auc"])
+
+cv_result_gbm["test_accuracy"].mean()
+cv_result_gbm["test_f1"].mean()
+cv_result_gbm["test_roc_auc"].mean()
+
+gbm_params = {"learning_rate": [0.01, 0.1],
+              "max_depth":[1,3,5,7,9],
+              "min_samples_split":[1,2,3,5,7,10,12],
+              "n_estimators": [100, 500, 700, 1000],
+              "subsample": [1, 0.5, 0.7]}
+
+gbm_best_params = GridSearchCV(gbm_model ,gbm_params ,cv=10 ,n_jobs=-1 ,verbose=True).fit(X,y)
+gbm_best_params.best_params_
+
+gbm_final= gbm_model.set_params(**gbm_best_params.best_params_).fit(X,y)
+
+cv_result_gbm = cross_validate(gbm_model ,X ,y ,cv=10 ,scoring=["accuracy","f1","roc_auc"])
+cv_result_gbm["test_accuracy"].mean()
+cv_result_gbm["test_f1"].mean()
+cv_result_gbm["test_roc_auc"].mean()
+
+plot_importance(gbm_final, X)
+val_curve_params(gbm_final, X, y, "max_depth", range(1, 11), scoring="roc_auc")
+
+################## *XGBoost* ####################
