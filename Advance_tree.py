@@ -39,10 +39,10 @@ rf_params = {"max_depth" : [5,10,None],
              "min_samples_split":[3,5,9,13,17,20],
              "n_estimators":[100,200,300,400,500]}
 
-rf_best_params = GridSearchCV(rf_model, rf_params, cv=10, n_jobs=-1, verbose=True).fit(X,y)
-rf_best_params.best_params_
+rf_best_grid = GridSearchCV(rf_model, rf_params, cv=10, n_jobs=-1, verbose=True).fit(X,y)
+rf_best_grid.best_params_
 
-rf_final = rf_model.set_params(**rf_best_params.best_params_).fit(X,y)
+rf_final = rf_model.set_params(**rf_best_grid.best_params_).fit(X,y)
 
 cv_result = cross_validate(rf_final, X, y, cv=10 , scoring=["accuracy", "f1", "roc_auc"])
 
@@ -103,10 +103,10 @@ gbm_params = {"learning_rate": [0.01, 0.1],
               "n_estimators": [100, 500, 700, 1000],
               "subsample": [1, 0.5, 0.7]}
 
-gbm_best_params = GridSearchCV(gbm_model ,gbm_params ,cv=10 ,n_jobs=-1 ,verbose=True).fit(X,y)
-gbm_best_params.best_params_
+gbm_best_grid = GridSearchCV(gbm_model ,gbm_params ,cv=10 ,n_jobs=-1 ,verbose=True).fit(X,y)
+gbm_best_grid.best_params_
 
-gbm_final= gbm_model.set_params(**gbm_best_params.best_params_).fit(X,y)
+gbm_final= gbm_model.set_params(**gbm_best_grid.best_params_).fit(X,y)
 
 cv_result_gbm = cross_validate(gbm_model ,X ,y ,cv=10 ,scoring=["accuracy","f1","roc_auc"])
 cv_result_gbm["test_accuracy"].mean()
@@ -117,3 +117,29 @@ plot_importance(gbm_final, X)
 val_curve_params(gbm_final, X, y, "max_depth", range(1, 11), scoring="roc_auc")
 
 ################## *XGBoost* ####################
+
+xgboost_model = XGBClassifier()
+xgboost_model.get_params()
+
+cv_result_xgb = cross_validate(xgboost_model, X, y, cv=10, scoring=["accuracy","f1","roc_auc"])
+cv_result_xgb["test_accuracy"].mean()
+cv_result_xgb["test_f1"].mean()
+cv_result_xgb["test_roc_auc"].mean()
+
+moddel_params = {"learning_rate": [0.1, 0.01],
+                  "max_depth": [5, 8, 10],
+                  "n_estimators": [100, 400, 500, 600, 800, 1000],
+                  "colsample_bytree": [0.7, 0.9, 1]}
+
+xgb_best_grid = GridSearchCV(xgboost_model, moddel_params ,cv=5 ,n_jobs=-1, verbose=True).fit(X, y)
+xgb_best_grid.best_params_
+
+xgb_final_model = XGBClassifier(**xgb_best_grid.best_params_).fit(X, y)
+
+cv_result_xgb = cross_validate(xgb_final_model, X, y, cv=10, scoring=["accuracy","f1","roc_auc"])
+cv_result_xgb["test_accuracy"].mean()
+cv_result_xgb["test_f1"].mean()
+cv_result_xgb["test_roc_auc"].mean()
+
+################## *LightGBM* ####################
+
