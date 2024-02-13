@@ -126,12 +126,12 @@ cv_result_xgb["test_accuracy"].mean()
 cv_result_xgb["test_f1"].mean()
 cv_result_xgb["test_roc_auc"].mean()
 
-moddel_params = {"learning_rate": [0.1, 0.01],
+xgb_params = {"learning_rate": [0.1, 0.01],
                   "max_depth": [5, 8, 10],
                   "n_estimators": [100, 400, 500, 600, 800, 1000],
                   "colsample_bytree": [0.7, 0.9, 1]}
 
-xgb_best_grid = GridSearchCV(xgboost_model, moddel_params ,cv=5 ,n_jobs=-1, verbose=True).fit(X, y)
+xgb_best_grid = GridSearchCV(xgboost_model, xgb_params ,cv=5 ,n_jobs=-1, verbose=True).fit(X, y)
 xgb_best_grid.best_params_
 
 xgb_final_model = XGBClassifier(**xgb_best_grid.best_params_).fit(X, y)
@@ -142,4 +142,27 @@ cv_result_xgb["test_f1"].mean()
 cv_result_xgb["test_roc_auc"].mean()
 
 ################## *LightGBM* ####################
+
+lightgbm_model = LGBMClassifier()
+lightgbm_model.get_params()
+
+cv_result_lgbm = cross_validate(lightgbm_model, X, y, cv=5, scoring=["accuracy","f1","roc_auc"])
+cv_result_lgbm["test_accuracy"].mean()
+cv_result_lgbm["test_f1"].mean()
+cv_result_lgbm["test_roc_auc"].mean()
+
+lgbm_params = {"learning_rate": [0.01, 0.1],
+                     "n_estimators": [100, 300, 500, 1000],
+                     "colsample_bytree": [0.5, 0.7, 1]}
+
+lgbm_best_grid = GridSearchCV(lightgbm_model, lgbm_params, cv=5, n_jobs=-1, verbose=True).fit(X, y)
+lgbm_best_grid.best_params_
+
+lightgbm_final_model = LGBMClassifier(**lgbm_best_grid.best_params_).fit(X, y)
+
+cv_result_lgbm = cross_validate(lightgbm_final_model, X, y, cv=10, scoring=["accuracy","f1","roc_auc"])
+cv_result_lgbm["test_accuracy"].mean()
+cv_result_lgbm["test_f1"].mean()
+cv_result_lgbm["test_roc_auc"].mean()
+
 
