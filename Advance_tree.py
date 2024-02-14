@@ -134,7 +134,7 @@ xgb_params = {"learning_rate": [0.1, 0.01],
 xgb_best_grid = GridSearchCV(xgboost_model, xgb_params ,cv=5 ,n_jobs=-1, verbose=True).fit(X, y)
 xgb_best_grid.best_params_
 
-xgb_final_model = XGBClassifier(**xgb_best_grid.best_params_).fit(X, y)
+xgb_final_model = xgboost_model.set_params(**xgb_best_grid.best_params_).fit(X, y)
 
 cv_result_xgb = cross_validate(xgb_final_model, X, y, cv=10, scoring=["accuracy","f1","roc_auc"])
 cv_result_xgb["test_accuracy"].mean()
@@ -152,17 +152,55 @@ cv_result_lgbm["test_f1"].mean()
 cv_result_lgbm["test_roc_auc"].mean()
 
 lgbm_params = {"learning_rate": [0.01, 0.1],
-                     "n_estimators": [100, 300, 500, 1000],
-                     "colsample_bytree": [0.5, 0.7, 1]}
+                "n_estimators": [100, 300, 500, 1000],
+                "colsample_bytree": [0.5, 0.7, 1]}
 
 lgbm_best_grid = GridSearchCV(lightgbm_model, lgbm_params, cv=5, n_jobs=-1, verbose=True).fit(X, y)
 lgbm_best_grid.best_params_
 
-lightgbm_final_model = LGBMClassifier(**lgbm_best_grid.best_params_).fit(X, y)
+lightgbm_final_model =lightgbm_model.set_params(**lgbm_best_grid.best_params_).fit(X, y)
 
 cv_result_lgbm = cross_validate(lightgbm_final_model, X, y, cv=10, scoring=["accuracy","f1","roc_auc"])
 cv_result_lgbm["test_accuracy"].mean()
 cv_result_lgbm["test_f1"].mean()
 cv_result_lgbm["test_roc_auc"].mean()
 
+################## *CatBoost* ####################
+
+cat_model = CatBoostClassifier()
+
+cv_result_cat = cross_validate(cat_model, X, y, cv=10, scoring=["accuracy","f1","roc_auc"])
+cv_result_cat["test_accuracy"].mean()
+cv_result_cat["test_f1"].mean()
+cv_result_cat["test_roc_auc"].mean()
+
+cat_model.get_params()
+catboost_params = {"iterations": [200, 400, 500, 600],
+                   "learning_rate": [0.01, 0.1],
+                   "depth": [3, 5, 6, 8]}
+cat_best_grid = GridSearchCV(cat_model, catboost_params, n_jobs=-1, verbose=True).fit(X, y)
+
+cat_final_model = cat_model.set_params(**cat_best_grid.best_params_).fit(X, y)
+cv_result_cat = cross_validate(cat_final_model, X, y, cv=10, scoring=["accuracy","f1","roc_auc"])
+cv_result_cat["test_accuracy"].mean()
+cv_result_cat["test_f1"].mean()
+cv_result_cat["test_roc_auc"].mean()
+
+def plot_importance(model, features, num=len(X), save=False):
+    feature_imp = pd.DataFrame({'Value': model.feature_importances_, 'Feature': features.columns})
+    plt.figure(figsize=(10, 10))
+    sns.set(font_scale=1)
+    sns.barplot(x="Value", y="Feature", data=feature_imp.sort_values(by="Value",
+                                                                     ascending=False)[0:num])
+    plt.title('Features')
+    plt.tight_layout()
+    plt.show()
+    if save:
+        plt.savefig('importances.png')
+
+plot_importance(rf_final, X)
+plot_importance(gbm_final, X)
+plot_importance(xgb_final_model, X)
+plot_importance(lightgbm_final_model, X)
+plot_importance(cat_final_model, X)
 
