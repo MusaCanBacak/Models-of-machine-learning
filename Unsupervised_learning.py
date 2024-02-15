@@ -12,4 +12,19 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import cross_val_score, GridSearchCV
 from sklearn.preprocessing import LabelEncoder
 
-df =pd.read_csv("/Dataset/USArrests.csv")
+df = pd.read_csv("Dataset/USArrests.csv", index_col=0)
+
+df.head()
+df.isnull().sum()
+df.info
+df.describe().T
+
+sc = MinMaxScaler((0, 1))
+df = sc.fit_transform(df)
+df[0:5]
+
+kMeans = KMeans(n_clusters=4).fit(df)
+kMeans.get_params()
+kMeans.cluster_centers_
+kMeans.labels_
+kMeans.inertia_
