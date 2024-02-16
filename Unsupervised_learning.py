@@ -11,6 +11,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.model_selection import cross_val_score, GridSearchCV
 from sklearn.preprocessing import LabelEncoder
+from sklearn.cluster import AgglomerativeClustering
 
 df = pd.read_csv("Dataset/USArrests.csv", index_col=0)
 print(df)
@@ -65,4 +66,37 @@ df[df["cluster"]==5]
 df.groupby("cluster").agg(["count","mean","median"])
 
 df.to_csv("clusters.csv")
+
+############## Hierarchical Clustering ##############
+
+df = pd.read_csv("Dataset/USArrests.csv", index_col=0)
+sc = MinMaxScaler((0, 1))
+df = sc.fit_transform(df)
+
+hc_average = linkage(df, "average")
+
+plt.figure(figsize=(14, 7))
+plt.title("Hierarchical Clustering Dendrogram")
+plt.xlabel("Observation Units")
+plt.ylabel("Distances")
+dendrogram(hc_average, leaf_font_size=10)
+plt.show()
+
+plt.figure(figsize=(7, 5))
+plt.title("Dendrograms")
+dend = dendrogram(hc_average)
+plt.axhline(y=0.5, color='r', linestyle='--')
+plt.axhline(y=0.6, color='b', linestyle='--')
+plt.show()
+
+cluster = AgglomerativeClustering(n_clusters = 5, linkage= "average")
+
+cluster = cluster.fit_predict(df)
+
+df["hi_cluster_no"] = cluster
+df["hi_cluster_no"] = df["hi_cluster_no"] +1
+
+df["kmeans_cluster_no"] = df["kmeans_cluster_no"] + 1
+df["kmeans_cluster_no"] = cluster_kmeans
+
 
