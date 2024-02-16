@@ -42,9 +42,9 @@ for k in K:
     ssd.append(kmeans.inertia_)
 
 plt.plot(K, ssd, 'bx-')
-plt.xlabel('Küme Sayısı')
-plt.ylabel('Toplam Hata Kareleri')
-plt.title('Küme Sayısı ile Toplam Hata Kareleri Arasındaki İlişki')
+plt.xlabel('Number of Clusters')
+plt.ylabel('SSE')
+plt.title('Relationship Between Number of Clusters and SSE')
 plt.show()
 
 kmeans = KMeans()
@@ -99,4 +99,32 @@ df["hi_cluster_no"] = df["hi_cluster_no"] +1
 df["kmeans_cluster_no"] = df["kmeans_cluster_no"] + 1
 df["kmeans_cluster_no"] = cluster_kmeans
 
+############## Principal Component Analysis ##############
 
+df = pd.read_csv["Dataset/hitters.csv"]
+df.head()
+
+num_col = [col for col in df.columns if df[col].dtype() != "0" and "Salary" not in col]
+df[num_col].head()
+
+df = df[num_col]
+df.dropna(inplace=True)
+
+df = StandardScaler().fit_transform(df)
+
+pca = PCA()
+pca_fit = pca.fit_transform(df)
+
+np.cumsum(pca.explained_variance_ratio_)
+
+pca = PCA().fit(df)
+plt.plot(np.cumsum(pca.explained_variance_ratio_))
+plt.xlabel("Number of Components")
+plt.ylabel("Cumulative Variance Ratio")
+plt.show()
+
+psa = PCA(n_components=3)
+pca_fit = pca.fit_transform(df)
+
+pca.explained_variance_ratio_
+np.cumsum(pca.explained_variance_ratio_)
